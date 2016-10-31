@@ -1,10 +1,8 @@
-[![Build Status](https://travis-ci.org/blockchainj/blockchainj.png?branch=master)](https://travis-ci.org/blockchainj/blockchainj)   [![Coverage Status](https://coveralls.io/repos/blockchainj/blockchainj/badge.png?branch=master)](https://coveralls.io/r/blockchainj/blockchainj?branch=master) 
-
-[![Visit our IRC channel](https://kiwiirc.com/buttons/irc.freenode.net/blockchainj.png)](https://kiwiirc.com/client/irc.freenode.net/blockchainj)
-
 ### Welcome to blockchainj
 
-The blockchainj library is a Java implementation of the Blockchain protocol, which allows it to maintain a wallet and send/receive transactions without needing a local copy of Blockchain Core. It comes with full documentation and some example apps showing how to use it.
+The blockchainj library is a modified fork from the well known [bitcoinj](https://github.com/bitcoinj/bitcoinj) library but supports multiple blockchain.
+
+You can actually use it for **Bitcoin** or **Internet of People** blockchains.
 
 ### Technologies
 
@@ -55,4 +53,4 @@ more info on this technique.
 
 ### Where next?
 
-Now you are ready to [follow the tutorial](https://blockchainj.github.io/getting-started).
+Now you are ready to [follow the tutorial](bitcoinj.github.io/getting-started-java).
