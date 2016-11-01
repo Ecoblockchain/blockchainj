@@ -427,7 +427,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.blockchainj</groupId>
+            <groupId>org.bitcoinj</groupId>
             <artifactId>orchid</artifactId>
             <version>1.2.1</version>
         </dependency>

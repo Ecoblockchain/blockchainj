@@ -215,7 +215,7 @@ public class Transaction extends ChildMessage {
      * @param params NetworkParameters object.
      * @param payload Blockchain protocol formatted byte array containing message content.
      * @param offset The location of the first payload byte within the array.
-     * @param parseRetain Whether to retain the backing byte array for quick reserialization.
+
      * If true and the backing byte array is invalidated due to modification of a field then
      * the cached bytes may be repopulated and retained if the message is serialized again in the future.
      * @param length The length of message if known.  Usually this is provided when deserializing of the wire
@@ -749,8 +749,8 @@ public class Transaction extends ChildMessage {
 
     /**
      * Adds an input to this transaction that imports value from the given output. Note that this input is <i>not</i>
-     * complete and after every input is added with {@link #addInput()} and every output is added with
-     * {@link #addOutput()}, a {@link TransactionSigner} must be used to finalize the transaction and finish the inputs
+     * complete and after every input is added withand every output is added with
+     * a {@link TransactionSigner} must be used to finalize the transaction and finish the inputs
      * off. Otherwise it won't be accepted by the network.
      * @return the newly created input.
      */
@@ -1205,12 +1205,20 @@ public class Transaction extends ChildMessage {
         checkArgument(height >= Block.BLOCK_HEIGHT_GENESIS);
         checkState(isCoinBase());
 
+        /**
+         * IoP coinbase transactions might not have the height in the scriptSig, but the signature of the whitelisted miner.
+         * If this is a IoP transaction we are skeeping this control.
+         */
+        if (params.getSupportedBlockchain() == SupportedBlockchain.INTERNET_OF_PEOPLE)
+            return;
+
         // Check block height is in coinbase input script
         final TransactionInput in = this.getInputs().get(0);
         final ScriptBuilder builder = new ScriptBuilder();
         builder.number(height);
         final byte[] expected = builder.build().getProgram();
         final byte[] actual = in.getScriptBytes();
+
         if (actual.length < expected.length) {
             throw new VerificationException.CoinbaseHeightMismatch("Block height mismatch in coinbase.");
         }
@@ -1265,7 +1273,19 @@ public class Transaction extends ChildMessage {
         }
 
         if (isCoinBase()) {
-            if (inputs.get(0).getScriptBytes().length < 2 || inputs.get(0).getScriptBytes().length > 100)
+            /**
+             * IoP coinbases might have a bigger ScriptSig size because they include the signature of the miner.
+             * If we are getting transactions from IoP we need to increase the value to perform the validation
+             */
+            int scriptsigMaxSize = 0;
+            if (params.getSupportedBlockchain() == SupportedBlockchain.BITCOIN)
+                scriptsigMaxSize = 100;
+
+            if (params.getSupportedBlockchain() == SupportedBlockchain.INTERNET_OF_PEOPLE)
+                scriptsigMaxSize = 220;
+
+
+            if (inputs.get(0).getScriptBytes().length < 2 || inputs.get(0).getScriptBytes().length > scriptsigMaxSize)
                 throw new VerificationException.CoinbaseScriptSizeOutOfRange();
         } else {
             for (TransactionInput input : inputs)

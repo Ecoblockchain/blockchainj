@@ -1,75 +1,66 @@
-/*
- * Copyright 2013 Google Inc.
- * Copyright 2014 Andreas Schildbach
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.blockchainj.params.IoP;
 
-package org.blockchainj.params;
+import org.blockchainj.core.*;
+import org.blockchainj.params.AbstractBlockchainNetParams;
+import org.blockchainj.params.TestNet2Params;
+import org.blockchainj.params.TestNet3Params;
+import org.blockchainj.store.BlockStore;
+import org.blockchainj.store.BlockStoreException;
 
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.blockchainj.core.*;
-import org.blockchainj.store.BlockStore;
-import org.blockchainj.store.BlockStoreException;
-
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Parameters for the testnet, a separate public instance of Blockchain that has relaxed rules suitable for development
- * and testing of applications and new Blockchain versions.
+ * Created by rodrigo on 10/31/16.
  */
-public class TestNet3Params extends AbstractBlockchainNetParams {
-    public TestNet3Params() {
-        super(SupportedBlockchain.BITCOIN);
-        id = ID_TESTNET;
+public class IoP_TestNet3Params extends AbstractBlockchainNetParams {
+
+
+    public IoP_TestNet3Params() {
+        super(SupportedBlockchain.INTERNET_OF_PEOPLE);
+        NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.INTERNET_OF_PEOPLE);
+        id = NetworkParametersGetter.getID_TESTNET();
         // Genesis hash is 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
-        packetMagic = 0x0b110907;
+        packetMagic = 0xb1fc50b3;
         interval = INTERVAL;
         targetTimespan = TARGET_TIMESPAN;
         maxTarget = Utils.decodeCompactBits(0x1d00ffffL);
-        port = 18333;
-        addressHeader = 111;
-        p2shHeader = 196;
+        port = 7475;
+        addressHeader = 130;
+        p2shHeader = 49;
         acceptableAddressCodes = new int[] { addressHeader, p2shHeader };
-        dumpedPrivateKeyHeader = 239;
-        genesisBlock.setTime(1296688602L);
+        dumpedPrivateKeyHeader = 76;
+        genesisBlock.setTime(1463452342L);
         genesisBlock.setDifficultyTarget(0x1d00ffffL);
-        genesisBlock.setNonce(414098458);
+        genesisBlock.setNonce(3335213172L);
         spendableCoinbaseDepth = 100;
         subsidyDecreaseBlockCount = 210000;
         String genesisHash = genesisBlock.getHashAsString();
-        checkState(genesisHash.equals("000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943"));
+        checkState(genesisHash.equals("000000006f2bb863230cda4f4fbee520314077e599a90b9c6072ea2018d7f3a3"));
         alertSigningKey = Utils.HEX.decode("04302390343f91cc401d56d68b123028bf52e5fca1939df127f63c6467cdf9c8e2c14b61104cf817d0b780da337893ecc4aaff1309e536162dabbdb45200ca2b0a");
 
         dnsSeeds = new String[] {
-                "testnet-seed.blockchain.schildbach.de", // Andreas Schildbach
-                "testnet-seed.blockchain.petertodd.org"  // Peter Todd
+                "ham4.fermat.cloud",
+                "ham5.fermat.cloud",
+                "ham6.fermat.cloud",
+                "ham7.fermat.cloud",
+                "ham8.fermat.cloud"
         };
         addrSeeds = null;
-        bip32HeaderPub = 0x043587CF;
-        bip32HeaderPriv = 0x04358394;
+        bip32HeaderPub = 0xBB8F4852;
+        bip32HeaderPriv = 0x2B7FA42A;
 
         majorityEnforceBlockUpgrade = TestNet2Params.TESTNET_MAJORITY_ENFORCE_BLOCK_UPGRADE;
         majorityRejectBlockOutdated = TestNet2Params.TESTNET_MAJORITY_REJECT_BLOCK_OUTDATED;
         majorityWindow = TestNet2Params.TESTNET_MAJORITY_WINDOW;
     }
 
-    private static TestNet3Params instance;
-    public static synchronized TestNet3Params get() {
+    private static IoP_TestNet3Params instance;
+    public static synchronized IoP_TestNet3Params get() {
         if (instance == null) {
-            instance = new TestNet3Params();
+            instance = new IoP_TestNet3Params();
         }
         return instance;
     }
@@ -84,7 +75,7 @@ public class TestNet3Params extends AbstractBlockchainNetParams {
 
     @Override
     public void checkDifficultyTransitions(final StoredBlock storedPrev, final Block nextBlock,
-        final BlockStore blockStore) throws VerificationException, BlockStoreException {
+                                           final BlockStore blockStore) throws VerificationException, BlockStoreException {
         if (!isDifficultyTransitionPoint(storedPrev) && nextBlock.getTime().after(testnetDiffDate)) {
             Block prev = storedPrev.getHeader();
 
@@ -95,19 +86,19 @@ public class TestNet3Params extends AbstractBlockchainNetParams {
             // There is an integer underflow bug in blockchain-qt that means mindiff blocks are accepted when time
             // goes backwards.
             if (timeDelta >= 0 && timeDelta <= NetworkParameters.TARGET_SPACING * 2) {
-        	// Walk backwards until we find a block that doesn't have the easiest proof of work, then check
-        	// that difficulty is equal to that one.
-        	StoredBlock cursor = storedPrev;
-        	while (!cursor.getHeader().equals(getGenesisBlock()) &&
-                       cursor.getHeight() % getInterval() != 0 &&
-                       cursor.getHeader().getDifficultyTargetAsInteger().equals(getMaxTarget()))
+                // Walk backwards until we find a block that doesn't have the easiest proof of work, then check
+                // that difficulty is equal to that one.
+                StoredBlock cursor = storedPrev;
+                while (!cursor.getHeader().equals(getGenesisBlock()) &&
+                        cursor.getHeight() % getInterval() != 0 &&
+                        cursor.getHeader().getDifficultyTargetAsInteger().equals(getMaxTarget()))
                     cursor = cursor.getPrev(blockStore);
-        	BigInteger cursorTarget = cursor.getHeader().getDifficultyTargetAsInteger();
-        	BigInteger newTarget = nextBlock.getDifficultyTargetAsInteger();
-        	if (!cursorTarget.equals(newTarget))
+                BigInteger cursorTarget = cursor.getHeader().getDifficultyTargetAsInteger();
+                BigInteger newTarget = nextBlock.getDifficultyTargetAsInteger();
+                if (!cursorTarget.equals(newTarget))
                     throw new VerificationException("Testnet block transition that is not allowed: " +
-                	Long.toHexString(cursor.getHeader().getDifficultyTarget()) + " vs " +
-                	Long.toHexString(nextBlock.getDifficultyTarget()));
+                            Long.toHexString(cursor.getHeader().getDifficultyTarget()) + " vs " +
+                            Long.toHexString(nextBlock.getDifficultyTarget()));
             }
         } else {
             super.checkDifficultyTransitions(storedPrev, nextBlock, blockStore);

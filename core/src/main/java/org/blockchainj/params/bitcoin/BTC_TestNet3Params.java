@@ -1,39 +1,26 @@
-/*
- * Copyright 2013 Google Inc.
- * Copyright 2014 Andreas Schildbach
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.blockchainj.params.bitcoin;
 
-package org.blockchainj.params;
+import org.blockchainj.core.*;
+import org.blockchainj.params.AbstractBlockchainNetParams;
+import org.blockchainj.params.TestNet2Params;
+import org.blockchainj.params.TestNet3Params;
+import org.blockchainj.store.BlockStore;
+import org.blockchainj.store.BlockStoreException;
 
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.blockchainj.core.*;
-import org.blockchainj.store.BlockStore;
-import org.blockchainj.store.BlockStoreException;
-
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Parameters for the testnet, a separate public instance of Blockchain that has relaxed rules suitable for development
- * and testing of applications and new Blockchain versions.
+ * Created by rodrigo on 10/31/16.
  */
-public class TestNet3Params extends AbstractBlockchainNetParams {
-    public TestNet3Params() {
+public class BTC_TestNet3Params extends AbstractBlockchainNetParams {
+
+    public BTC_TestNet3Params() {
         super(SupportedBlockchain.BITCOIN);
-        id = ID_TESTNET;
+        NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.BITCOIN);
+        id = NetworkParametersGetter.getID_TESTNET();
         // Genesis hash is 000000000933ea01ad0ee984209779baaec3ced90fa3f408719526f8d77f4943
         packetMagic = 0x0b110907;
         interval = INTERVAL;
@@ -66,10 +53,10 @@ public class TestNet3Params extends AbstractBlockchainNetParams {
         majorityWindow = TestNet2Params.TESTNET_MAJORITY_WINDOW;
     }
 
-    private static TestNet3Params instance;
-    public static synchronized TestNet3Params get() {
+    private static BTC_TestNet3Params instance;
+    public static synchronized BTC_TestNet3Params get() {
         if (instance == null) {
-            instance = new TestNet3Params();
+            instance = new BTC_TestNet3Params();
         }
         return instance;
     }
@@ -84,7 +71,7 @@ public class TestNet3Params extends AbstractBlockchainNetParams {
 
     @Override
     public void checkDifficultyTransitions(final StoredBlock storedPrev, final Block nextBlock,
-        final BlockStore blockStore) throws VerificationException, BlockStoreException {
+                                           final BlockStore blockStore) throws VerificationException, BlockStoreException {
         if (!isDifficultyTransitionPoint(storedPrev) && nextBlock.getTime().after(testnetDiffDate)) {
             Block prev = storedPrev.getHeader();
 
@@ -95,19 +82,19 @@ public class TestNet3Params extends AbstractBlockchainNetParams {
             // There is an integer underflow bug in blockchain-qt that means mindiff blocks are accepted when time
             // goes backwards.
             if (timeDelta >= 0 && timeDelta <= NetworkParameters.TARGET_SPACING * 2) {
-        	// Walk backwards until we find a block that doesn't have the easiest proof of work, then check
-        	// that difficulty is equal to that one.
-        	StoredBlock cursor = storedPrev;
-        	while (!cursor.getHeader().equals(getGenesisBlock()) &&
-                       cursor.getHeight() % getInterval() != 0 &&
-                       cursor.getHeader().getDifficultyTargetAsInteger().equals(getMaxTarget()))
+                // Walk backwards until we find a block that doesn't have the easiest proof of work, then check
+                // that difficulty is equal to that one.
+                StoredBlock cursor = storedPrev;
+                while (!cursor.getHeader().equals(getGenesisBlock()) &&
+                        cursor.getHeight() % getInterval() != 0 &&
+                        cursor.getHeader().getDifficultyTargetAsInteger().equals(getMaxTarget()))
                     cursor = cursor.getPrev(blockStore);
-        	BigInteger cursorTarget = cursor.getHeader().getDifficultyTargetAsInteger();
-        	BigInteger newTarget = nextBlock.getDifficultyTargetAsInteger();
-        	if (!cursorTarget.equals(newTarget))
+                BigInteger cursorTarget = cursor.getHeader().getDifficultyTargetAsInteger();
+                BigInteger newTarget = nextBlock.getDifficultyTargetAsInteger();
+                if (!cursorTarget.equals(newTarget))
                     throw new VerificationException("Testnet block transition that is not allowed: " +
-                	Long.toHexString(cursor.getHeader().getDifficultyTarget()) + " vs " +
-                	Long.toHexString(nextBlock.getDifficultyTarget()));
+                            Long.toHexString(cursor.getHeader().getDifficultyTarget()) + " vs " +
+                            Long.toHexString(nextBlock.getDifficultyTarget()));
             }
         } else {
             super.checkDifficultyTransitions(storedPrev, nextBlock, blockStore);

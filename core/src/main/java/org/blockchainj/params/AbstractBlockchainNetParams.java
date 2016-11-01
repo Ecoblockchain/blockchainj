@@ -20,22 +20,14 @@ package org.blockchainj.params;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 
-import org.blockchainj.core.Block;
-import org.blockchainj.core.Coin;
-import org.blockchainj.core.NetworkParameters;
-import org.blockchainj.core.StoredBlock;
-import org.blockchainj.core.Transaction;
-import org.blockchainj.core.Utils;
+import org.blockchainj.core.*;
 import org.blockchainj.utils.MonetaryFormat;
-import org.blockchainj.core.VerificationException;
 import org.blockchainj.store.BlockStore;
 import org.blockchainj.store.BlockStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Stopwatch;
-
-import org.blockchainj.core.BlockchainSerializer;
 
 /**
  * Parameters for Blockchain-like networks.
@@ -46,10 +38,13 @@ public abstract class AbstractBlockchainNetParams extends NetworkParameters {
      */
     public static final String BLOCKCHAIN_SCHEME = "blockchain";
 
+
     private static final Logger log = LoggerFactory.getLogger(AbstractBlockchainNetParams.class);
 
-    public AbstractBlockchainNetParams() {
-        super();
+
+
+    public AbstractBlockchainNetParams(SupportedBlockchain supportedBlockchain) {
+        super(supportedBlockchain);
     }
 
     /** 

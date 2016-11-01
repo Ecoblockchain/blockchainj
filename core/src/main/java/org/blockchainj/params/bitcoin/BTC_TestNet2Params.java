@@ -1,38 +1,26 @@
-/*
- * Copyright 2013 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.blockchainj.params.bitcoin;
 
-package org.blockchainj.params;
-
+import org.blockchainj.core.NetworkParametersGetter;
 import org.blockchainj.core.SupportedBlockchain;
 import org.blockchainj.core.Utils;
+import org.blockchainj.params.AbstractBlockchainNetParams;
+import org.blockchainj.params.TestNet2Params;
 
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Parameters for the old version 2 testnet. This is not useful to you - it exists only because some unit tests are
- * based on it.
+ * Created by rodrigo on 10/31/16.
  */
-public class TestNet2Params extends AbstractBlockchainNetParams {
+public class BTC_TestNet2Params extends AbstractBlockchainNetParams {
+
     public static final int TESTNET_MAJORITY_WINDOW = 100;
     public static final int TESTNET_MAJORITY_REJECT_BLOCK_OUTDATED = 75;
     public static final int TESTNET_MAJORITY_ENFORCE_BLOCK_UPGRADE = 51;
 
-    public TestNet2Params() {
+    public BTC_TestNet2Params() {
         super(SupportedBlockchain.BITCOIN);
-        id = ID_TESTNET;
+        NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.BITCOIN);
+        id = NetworkParametersGetter.getID_TESTNET();
         packetMagic = 0xfabfb5daL;
         port = 18333;
         addressHeader = 111;
@@ -59,10 +47,10 @@ public class TestNet2Params extends AbstractBlockchainNetParams {
         majorityWindow = TESTNET_MAJORITY_WINDOW;
     }
 
-    private static TestNet2Params instance;
-    public static synchronized TestNet2Params get() {
+    private static BTC_TestNet2Params instance;
+    public static synchronized BTC_TestNet2Params get() {
         if (instance == null) {
-            instance = new TestNet2Params();
+            instance = new BTC_TestNet2Params();
         }
         return instance;
     }

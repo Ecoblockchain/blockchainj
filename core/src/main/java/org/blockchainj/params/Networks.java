@@ -19,6 +19,10 @@ package org.blockchainj.params;
 import org.blockchainj.core.NetworkParameters;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import org.blockchainj.params.IoP.IoP_MainNetParams;
+import org.blockchainj.params.IoP.IoP_TestNet3Params;
+import org.blockchainj.params.bitcoin.BTC_MainNetParams;
+import org.blockchainj.params.bitcoin.BTC_TestNet3Params;
 
 import java.util.Collection;
 import java.util.Set;
@@ -31,7 +35,8 @@ import java.util.Set;
  */
 public class Networks {
     /** Registered networks */
-    private static Set<? extends NetworkParameters> networks = ImmutableSet.of(TestNet3Params.get(), MainNetParams.get());
+    //added new IoP networks to the list.
+    private static Set<? extends NetworkParameters> networks = ImmutableSet.of(BTC_TestNet3Params.get(), BTC_MainNetParams.get(), IoP_TestNet3Params.get(), IoP_MainNetParams.get());
 
     public static Set<? extends NetworkParameters> get() {
         return networks;

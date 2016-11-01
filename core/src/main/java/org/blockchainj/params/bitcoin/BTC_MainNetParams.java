@@ -1,38 +1,24 @@
-/*
- * Copyright 2013 Google Inc.
- * Copyright 2015 Andreas Schildbach
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.blockchainj.params;
+package org.blockchainj.params.bitcoin;
 
 import org.blockchainj.core.*;
-import org.blockchainj.net.discovery.*;
+import org.blockchainj.net.discovery.HttpDiscovery;
+import org.blockchainj.params.AbstractBlockchainNetParams;
+import org.blockchainj.params.MainNetParams;
 
-import java.net.*;
+import java.net.URI;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Parameters for the main production network on which people trade goods and services.
+ * Created by rodrigo on 10/31/16.
  */
-public class MainNetParams extends AbstractBlockchainNetParams {
+public class BTC_MainNetParams extends AbstractBlockchainNetParams {
+
     public static final int MAINNET_MAJORITY_WINDOW = 1000;
     public static final int MAINNET_MAJORITY_REJECT_BLOCK_OUTDATED = 950;
     public static final int MAINNET_MAJORITY_ENFORCE_BLOCK_UPGRADE = 750;
 
-    public MainNetParams() {
+    public BTC_MainNetParams() {
         super(SupportedBlockchain.BITCOIN);
         interval = INTERVAL;
         targetTimespan = TARGET_TIMESPAN;
@@ -53,7 +39,8 @@ public class MainNetParams extends AbstractBlockchainNetParams {
         genesisBlock.setDifficultyTarget(0x1d00ffffL);
         genesisBlock.setTime(1231006505L);
         genesisBlock.setNonce(2083236893);
-        id = ID_MAINNET;
+        NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.BITCOIN);
+        id = NetworkParametersGetter.getID_MAINNET();
         subsidyDecreaseBlockCount = 210000;
         spendableCoinbaseDepth = 100;
         String genesisHash = genesisBlock.getHashAsString();
@@ -129,10 +116,10 @@ public class MainNetParams extends AbstractBlockchainNetParams {
         };
     }
 
-    private static MainNetParams instance;
-    public static synchronized MainNetParams get() {
+    private static BTC_MainNetParams instance;
+    public static synchronized BTC_MainNetParams get() {
         if (instance == null) {
-            instance = new MainNetParams();
+            instance = new BTC_MainNetParams();
         }
         return instance;
     }
