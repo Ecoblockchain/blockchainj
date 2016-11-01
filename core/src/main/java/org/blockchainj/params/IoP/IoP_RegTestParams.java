@@ -23,6 +23,8 @@ public class IoP_RegTestParams extends IoP_TestNet2Params {
         interval = 10000;
         maxTarget = MAX_TARGET;
         subsidyDecreaseBlockCount = 150;
+        // the amount of blocks premined that are taking into consideration when calculating the subsidy
+        subsidyPremineDecreaseBlockCount = 500;
         port = 14877;
         NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.INTERNET_OF_PEOPLE);
         id = NetworkParametersGetter.getID_REGTEST();

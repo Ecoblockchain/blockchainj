@@ -37,6 +37,8 @@ public class IoP_TestNet3Params extends AbstractBlockchainNetParams {
         genesisBlock.setNonce(3335213172L);
         spendableCoinbaseDepth = 100;
         subsidyDecreaseBlockCount = 210000;
+        // the amount of blocks premined that are taking into consideration when calculating the subsidy
+        subsidyPremineDecreaseBlockCount = 42000;
         String genesisHash = genesisBlock.getHashAsString();
         checkState(genesisHash.equals("000000006f2bb863230cda4f4fbee520314077e599a90b9c6072ea2018d7f3a3"));
         alertSigningKey = Utils.HEX.decode("04302390343f91cc401d56d68b123028bf52e5fca1939df127f63c6467cdf9c8e2c14b61104cf817d0b780da337893ecc4aaff1309e536162dabbdb45200ca2b0a");

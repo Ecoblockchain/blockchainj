@@ -103,6 +103,14 @@ public abstract class NetworkParameters {
     protected int majorityRejectBlockOutdated;
     protected int majorityWindow;
 
+    // the premined amount of blocks that are taken into consideration for calculating the subsidy. Only for IoP
+    protected int subsidyPremineDecreaseBlockCount = 0;
+
+    protected int getSubsidyPremineDecreaseBlockCount(){
+        return subsidyPremineDecreaseBlockCount;
+    }
+
+    // the supported blockchain of this network parameter
     protected SupportedBlockchain supportedBlockchain;
 
     /**

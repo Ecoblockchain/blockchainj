@@ -216,7 +216,22 @@ public class Block extends Message {
      * </p>
      */
     public Coin getBlockInflation(int height) {
-        return FIFTY_COINS.shiftRight(height / params.getSubsidyDecreaseBlockCount());
+        if (this.params.getSupportedBlockchain() == SupportedBlockchain.BITCOIN)
+            return FIFTY_COINS.shiftRight(height / params.getSubsidyDecreaseBlockCount());
+
+        /**
+         * If this block is from IoP blockchain, a premine of 2.100.000 IoPs exists for block 1 and then is 1 IoP per block.
+         */
+        if (this.params.getSupportedBlockchain() == SupportedBlockchain.INTERNET_OF_PEOPLE){
+            if (height == 1)
+                return COIN.multiply(2100000);
+            else
+                //since a premine exists, it is assumed that 42000 blocks have already been mined, so the first Subsidy takes that amount of blocks for the calc.
+                Preconditions.checkArgument(params.getSubsidyPremineDecreaseBlockCount() > 0);
+                return COIN.shiftRight((height + params.getSubsidyPremineDecreaseBlockCount()) / params.getSubsidyDecreaseBlockCount());
+        }
+
+        return null;
     }
 
     /**

@@ -19,6 +19,7 @@ public class IoP_MainNetParams extends AbstractBlockchainNetParams {
     public static final int MAINNET_MAJORITY_REJECT_BLOCK_OUTDATED = 950;
     public static final int MAINNET_MAJORITY_ENFORCE_BLOCK_UPGRADE = 750;
 
+
     public IoP_MainNetParams() {
         super(SupportedBlockchain.INTERNET_OF_PEOPLE);
         interval = INTERVAL;
@@ -43,6 +44,8 @@ public class IoP_MainNetParams extends AbstractBlockchainNetParams {
         NetworkParametersGetter.setSupportedBlockchain(SupportedBlockchain.INTERNET_OF_PEOPLE);
         id = NetworkParametersGetter.getID_MAINNET();
         subsidyDecreaseBlockCount = 210000;
+        // the amount of blocks premined that are taking into consideration when calculating the subsidy
+        subsidyPremineDecreaseBlockCount = 42000;
         spendableCoinbaseDepth = 100;
         String genesisHash = genesisBlock.getHashAsString();
         checkState(genesisHash.equals("00000000bf5f2ee556cb9be8be64e0776af14933438dbb1af72c41bfb6c82db3"),
